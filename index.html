@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postoperative Versorgung – Spinalkanalstenose</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            background: #1a2744;
+            width: 100%;
+            padding: 18px 20px;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            text-align: left;
+        }
+
+        .header h1 {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header p {
+            font-size: 0.8em;
+            opacity: 0.85;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Avatar */
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 15px;
+        }
+
+        .avatar-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2980b9 0%, #1a5276 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(41, 128, 185, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-circle.speaking {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(41, 128, 185, 0.3); }
+            50% { box-shadow: 0 4px 30px rgba(41, 128, 185, 0.6), 0 0 60px rgba(41, 128, 185, 0.2); }
+        }
+
+        /* Doctor SVG Avatar */
+        .doctor-avatar {
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Speech bubble */
+        .speech-bubble {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1em;
+            line-height: 1.5;
+            color: #2c3e50;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: opacity 0.3s ease;
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid white;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-play:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-play:disabled {
+            background: #95a5a6;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(192, 57, 43, 0.3);
+        }
+
+        .btn-stop:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-stop:disabled {
+            background: #95a5a6;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #dfe6e9;
+            border-radius: 3px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2980b9, #27ae60);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            opacity: 0.5;
+            transition: all 0.4s ease;
+            border-left: 4px solid #bdc3c7;
+        }
+
+        .card.active {
+            opacity: 1;
+            border-left-color: #2980b9;
+            box-shadow: 0 4px 15px rgba(41, 128, 185, 0.15);
+        }
+
+        .card.done {
+            opacity: 0.8;
+            border-left-color: #27ae60;
+        }
+
+        .card-icon {
+            font-size: 1.6em;
+            flex-shrink: 0;
+            width: 40px;
+            text-align: center;
+        }
+
+        .card-content h3 {
+            font-size: 0.95em;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .card-content p {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #95a5a6;
+            font-size: 0.75em;
+        }
+
+        /* Sound wave animation */
+        .sound-waves {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 3px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .sound-waves.active {
+            opacity: 1;
+        }
+
+        .sound-wave {
+            width: 4px;
+            background: #2980b9;
+            border-radius: 2px;
+            animation: wave 0.8s ease-in-out infinite;
+        }
+
+        .sound-wave:nth-child(1) { height: 12px; animation-delay: 0s; }
+        .sound-wave:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+        .sound-wave:nth-child(3) { height: 16px; animation-delay: 0.2s; }
+        .sound-wave:nth-child(4) { height: 24px; animation-delay: 0.3s; }
+        .sound-wave:nth-child(5) { height: 16px; animation-delay: 0.4s; }
+        .sound-wave:nth-child(6) { height: 20px; animation-delay: 0.5s; }
+        .sound-wave:nth-child(7) { height: 12px; animation-delay: 0.6s; }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Mouth animation */
+        .mouth {
+            transition: all 0.15s;
+        }
+
+        .speaking .mouth-closed { display: none; }
+        .speaking .mouth-open { display: block; }
+        .not-speaking .mouth-closed { display: block; }
+        .not-speaking .mouth-open { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-logo">
+        <!-- BCN Logo -->
+        <svg width="60" height="50" viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none">
+                <line x1="18" y1="140" x2="10" y2="10"/>
+                <line x1="18" y1="140" x2="20" y2="8"/>
+                <line x1="18" y1="140" x2="30" y2="10"/>
+                <line x1="18" y1="140" x2="42" y2="15"/>
+                <line x1="18" y1="140" x2="54" y2="22"/>
+                <line x1="18" y1="140" x2="65" y2="32"/>
+                <line x1="18" y1="140" x2="74" y2="44"/>
+                <line x1="18" y1="140" x2="82" y2="58"/>
+                <line x1="18" y1="140" x2="88" y2="72"/>
+                <line x1="18" y1="140" x2="92" y2="88"/>
+                <line x1="18" y1="140" x2="93" y2="104"/>
+                <line x1="18" y1="140" x2="90" y2="120"/>
+            </g>
+            <text x="105" y="68" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="bold" fill="white">BCN</text>
+            <text x="105" y="95" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="white">Berlin</text>
+            <text x="105" y="115" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="white">Charité</text>
+            <text x="105" y="135" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="white">Neurosurgery</text>
+        </svg>
+    </div>
+    <div class="header-text">
+        <h1>Postoperative Versorgung</h1>
+        <p>Spinalkanalstenosen-Operation</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="avatar-section">
+        <div class="avatar-wrapper">
+            <div class="avatar-circle not-speaking" id="avatarCircle">
+                <!-- Doctor Avatar SVG -->
+                <svg class="doctor-avatar" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Head -->
+                    <circle cx="60" cy="42" r="28" fill="#f5cba7"/>
+                    <!-- Hair -->
+                    <path d="M32 38 Q32 15 60 14 Q88 15 88 38 Q85 25 60 24 Q35 25 32 38Z" fill="#5d4037"/>
+                    <!-- Eyes -->
+                    <circle cx="48" cy="38" r="3" fill="#2c3e50"/>
+                    <circle cx="72" cy="38" r="3" fill="#2c3e50"/>
+                    <!-- Eyebrows -->
+                    <path d="M43 32 Q48 29 53 32" stroke="#5d4037" stroke-width="1.5" fill="none"/>
+                    <path d="M67 32 Q72 29 77 32" stroke="#5d4037" stroke-width="1.5" fill="none"/>
+                    <!-- Nose -->
+                    <path d="M58 42 Q60 47 62 42" stroke="#e0a97a" stroke-width="1.2" fill="none"/>
+                    <!-- Mouth closed -->
+                    <path class="mouth mouth-closed" d="M52 52 Q60 58 68 52" stroke="#c0392b" stroke-width="1.5" fill="none"/>
+                    <!-- Mouth open (speaking) -->
+                    <ellipse class="mouth mouth-open" cx="60" cy="54" rx="7" ry="5" fill="#c0392b" style="display:none"/>
+                    <!-- Ears -->
+                    <ellipse cx="32" cy="42" rx="4" ry="6" fill="#f5cba7"/>
+                    <ellipse cx="88" cy="42" rx="4" ry="6" fill="#f5cba7"/>
+                    <!-- Neck -->
+                    <rect x="54" y="68" width="12" height="8" fill="#f5cba7"/>
+                    <!-- Body / White coat -->
+                    <path d="M30 120 Q30 80 60 76 Q90 80 90 120Z" fill="white"/>
+                    <!-- Coat lapels -->
+                    <path d="M52 76 L48 95 L60 88Z" fill="#ecf0f1"/>
+                    <path d="M68 76 L72 95 L60 88Z" fill="#ecf0f1"/>
+                    <!-- Stethoscope -->
+                    <path d="M45 85 Q40 95 42 105" stroke="#2980b9" stroke-width="2" fill="none"/>
+                    <circle cx="42" cy="107" r="4" fill="#2980b9"/>
+                    <circle cx="42" cy="107" r="2" fill="#1a5276"/>
+                    <!-- Smile lines -->
+                    <path d="M44 48 Q46 50 48 48" stroke="#e0a97a" stroke-width="0.5" fill="none"/>
+                    <path d="M72 48 Q74 50 76 48" stroke="#e0a97a" stroke-width="0.5" fill="none"/>
+                    <!-- Glasses (optional medical look) -->
+                    <circle cx="48" cy="38" r="8" stroke="#7f8c8d" stroke-width="1.2" fill="none"/>
+                    <circle cx="72" cy="38" r="8" stroke="#7f8c8d" stroke-width="1.2" fill="none"/>
+                    <line x1="56" y1="38" x2="64" y2="38" stroke="#7f8c8d" stroke-width="1.2"/>
+                </svg>
+            </div>
+            <div class="sound-waves" id="soundWaves">
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+                <div class="sound-wave"></div>
+            </div>
+        </div>
+
+        <div class="speech-bubble" id="speechBubble">
+            Drücken Sie <strong>Play</strong>, um die Erklärung zu starten.
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-play" id="btnPlay" onclick="startPresentation()">
+            <span id="playIcon">&#9654;</span> Abspielen
+        </button>
+        <button class="btn btn-stop" id="btnStop" onclick="stopPresentation()" disabled>
+            &#9632; Stopp
+        </button>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="info-cards" id="infoCards">
+        <div class="card" data-step="0">
+            <div class="card-icon">👋</div>
+            <div class="card-content">
+                <h3>Begrüßung</h3>
+                <p>Willkommen und Einführung</p>
+            </div>
+        </div>
+        <div class="card" data-step="1">
+            <div class="card-icon">🩹</div>
+            <div class="card-content">
+                <h3>Wundversorgung</h3>
+                <p>Wunde ist geklebt – Pflaster nach 3 Tagen entfernen</p>
+            </div>
+        </div>
+        <div class="card" data-step="2">
+            <div class="card-icon">✂️</div>
+            <div class="card-content">
+                <h3>Fäden ziehen</h3>
+                <p>Falls Fäden vorhanden: nach 14 Tagen beim Hausarzt</p>
+            </div>
+        </div>
+        <div class="card" data-step="3">
+            <div class="card-icon">🚿</div>
+            <div class="card-content">
+                <h3>Duschen & Baden</h3>
+                <p>Duschen nach 3 Tagen, Baden erst nach 4 Wochen</p>
+            </div>
+        </div>
+        <div class="card" data-step="4">
+            <div class="card-icon">🚶</div>
+            <div class="card-content">
+                <h3>Bewegung & Belastung</h3>
+                <p>Leichte Bewegung gut, schweres Heben vermeiden</p>
+            </div>
+        </div>
+        <div class="card" data-step="5">
+            <div class="card-icon">💊</div>
+            <div class="card-content">
+                <h3>Schmerzmedikation</h3>
+                <p>Schmerzmittel nach Bedarf einnehmen</p>
+            </div>
+        </div>
+        <div class="card" data-step="6">
+            <div class="card-icon">⚠️</div>
+            <div class="card-content">
+                <h3>Warnsignale</h3>
+                <p>Wann Sie sofort einen Arzt kontaktieren sollten</p>
+            </div>
+        </div>
+        <div class="card" data-step="7">
+            <div class="card-icon">📋</div>
+            <div class="card-content">
+                <h3>Nachsorgetermine</h3>
+                <p>Kontrolltermin und Rehabilitation</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Diese Information ersetzt nicht das persönliche Gespräch mit Ihrem Arzt.</p>
+    <p>Bei Fragen wenden Sie sich bitte an die Klinik für Neurochirurgie der Charité Berlin.</p>
+</div>
+
+<script>
+    // Presentation script sections
+    const sections = [
+        {
+            text: "Guten Tag! Ich freue mich, dass Ihre Operation gut verlaufen ist. Ich möchte Ihnen nun erklären, was Sie in den nächsten Tagen und Wochen beachten sollten, damit Sie sich bestmöglich erholen.",
+            bubble: "Guten Tag! Ihre Operation ist gut verlaufen. Ich erkläre Ihnen jetzt die wichtigsten Punkte für Ihre Erholung."
+        },
+        {
+            text: "Zunächst zur Wundversorgung. Ihre Wunde wurde geklebt. Das Pflaster, das sich auf der Wunde befindet, können Sie nach drei Tagen vorsichtig entfernen. Die Wunde sollte trocken und sauber gehalten werden. Bitte kratzen oder reiben Sie nicht an der Wunde.",
+            bubble: "<strong>Wundversorgung:</strong> Wunde ist geklebt. Pflaster nach 3 Tagen entfernen. Wunde trocken und sauber halten."
+        },
+        {
+            text: "Falls bei Ihnen Fäden verwendet wurden: Diese sollten nach vierzehn Tagen gezogen werden. Vereinbaren Sie dafür bitte einen Termin bei Ihrem Hausarzt. Falls Ihre Wunde ausschließlich geklebt wurde, ist kein Fäden ziehen nötig.",
+            bubble: "<strong>Fäden:</strong> Falls vorhanden, nach 14 Tagen beim Hausarzt ziehen lassen."
+        },
+        {
+            text: "Zum Thema Duschen und Baden: Sie dürfen bereits nach drei Tagen wieder duschen. Lassen Sie das Wasser dabei kurz über die Wunde laufen, aber reiben Sie nicht daran. Bitte vermeiden Sie Baden, Schwimmen und Saunagänge für mindestens vier Wochen nach der Operation.",
+            bubble: "<strong>Duschen:</strong> Nach 3 Tagen erlaubt.<br><strong>Baden & Schwimmen:</strong> Erst nach 4 Wochen."
+        },
+        {
+            text: "Bewegung ist wichtig für Ihre Genesung. Leichte Spaziergänge sind bereits in den ersten Tagen erwünscht und helfen bei der Heilung. Vermeiden Sie jedoch schweres Heben über fünf Kilogramm für die nächsten sechs Wochen. Auch langes Sitzen oder Stehen sollten Sie in den ersten Wochen vermeiden. Wechseln Sie regelmäßig Ihre Position.",
+            bubble: "<strong>Bewegung:</strong> Spaziergänge erwünscht.<br><strong>Vermeiden:</strong> Schweres Heben (>5 kg) für 6 Wochen. Regelmäßig Position wechseln."
+        },
+        {
+            text: "Zu Ihrer Schmerzmedikation: Nehmen Sie die verordneten Schmerzmittel nach Bedarf ein. Es ist wichtig, dass Sie Schmerzen nicht einfach aushalten, sondern rechtzeitig Ihre Medikamente nehmen. Sollten die Schmerzen trotz Medikation zunehmen, kontaktieren Sie bitte Ihren Arzt.",
+            bubble: "<strong>Schmerzmittel:</strong> Nach Bedarf einnehmen, Schmerzen nicht aushalten. Bei zunehmenden Schmerzen → Arzt kontaktieren."
+        },
+        {
+            text: "Bitte achten Sie auf folgende Warnsignale und kontaktieren Sie sofort einen Arzt, wenn eines davon auftritt: Fieber über achtunddreißig Grad fünf. Zunehmende Rötung, Schwellung oder Eiterbildung an der Wunde. Neu auftretende Taubheitsgefühle oder Lähmungen in den Beinen. Probleme beim Wasserlassen oder Stuhlgang. Starke, zunehmende Schmerzen trotz Medikation.",
+            bubble: "<strong>Sofort zum Arzt bei:</strong><br>• Fieber > 38,5°C<br>• Rötung, Schwellung, Eiter<br>• Taubheit oder Lähmung<br>• Blasen-/Darmprobleme<br>• Starke zunehmende Schmerzen"
+        },
+        {
+            text: "Zum Abschluss: Bitte nehmen Sie Ihren vereinbarten Kontrolltermin wahr. Falls eine Rehabilitation geplant ist, erhalten Sie die entsprechenden Unterlagen von uns. Bei Fragen können Sie sich jederzeit an unsere Klinik wenden. Ich wünsche Ihnen eine gute und schnelle Genesung!",
+            bubble: "<strong>Kontrolltermin</strong> wahrnehmen.<br><strong>Reha:</strong> Unterlagen erhalten Sie von uns.<br><br>Gute Besserung! 🙏"
+        }
+    ];
+
+    let currentStep = -1;
+    let isPlaying = false;
+    let synth = window.speechSynthesis;
+    let mouthInterval = null;
+
+    function getGermanVoice() {
+        const voices = synth.getVoices();
+        // Prefer high-quality German voices
+        let voice = voices.find(v => v.lang.startsWith('de') && v.name.includes('Anna'));
+        if (!voice) voice = voices.find(v => v.lang.startsWith('de') && v.localService);
+        if (!voice) voice = voices.find(v => v.lang.startsWith('de'));
+        return voice;
+    }
+
+    function setSpeaking(isSpeaking) {
+        const avatar = document.getElementById('avatarCircle');
+        const waves = document.getElementById('soundWaves');
+
+        if (isSpeaking) {
+            avatar.classList.add('speaking');
+            avatar.classList.remove('not-speaking');
+            waves.classList.add('active');
+            startMouthAnimation();
+        } else {
+            avatar.classList.remove('speaking');
+            avatar.classList.add('not-speaking');
+            waves.classList.remove('active');
+            stopMouthAnimation();
+        }
+    }
+
+    function startMouthAnimation() {
+        stopMouthAnimation();
+        mouthInterval = setInterval(() => {
+            const avatar = document.getElementById('avatarCircle');
+            const isOpen = avatar.querySelector('.mouth-open').style.display !== 'none';
+            if (isOpen) {
+                avatar.querySelector('.mouth-open').style.display = 'none';
+                avatar.querySelector('.mouth-closed').style.display = 'block';
+            } else {
+                avatar.querySelector('.mouth-open').style.display = 'block';
+                avatar.querySelector('.mouth-closed').style.display = 'none';
+            }
+        }, 200);
+    }
+
+    function stopMouthAnimation() {
+        if (mouthInterval) {
+            clearInterval(mouthInterval);
+            mouthInterval = null;
+        }
+        const avatar = document.getElementById('avatarCircle');
+        if (avatar) {
+            avatar.querySelector('.mouth-open').style.display = 'none';
+            avatar.querySelector('.mouth-closed').style.display = 'block';
+        }
+    }
+
+    function updateProgress() {
+        const fill = document.getElementById('progressFill');
+        const pct = ((currentStep + 1) / sections.length) * 100;
+        fill.style.width = pct + '%';
+    }
+
+    function setActiveCard(step) {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, i) => {
+            card.classList.remove('active');
+            if (i < step) card.classList.add('done');
+            if (i === step) {
+                card.classList.add('active');
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    }
+
+    function speakSection(index) {
+        if (index >= sections.length) {
+            finishPresentation();
+            return;
+        }
+
+        currentStep = index;
+        const section = sections[index];
+
+        // Update UI
+        document.getElementById('speechBubble').innerHTML = section.bubble;
+        setActiveCard(index);
+        updateProgress();
+
+        // Speak
+        const utterance = new SpeechSynthesisUtterance(section.text);
+        utterance.lang = 'de-DE';
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+
+        const voice = getGermanVoice();
+        if (voice) utterance.voice = voice;
+
+        utterance.onstart = () => setSpeaking(true);
+        utterance.onend = () => {
+            setSpeaking(false);
+            if (isPlaying) {
+                setTimeout(() => speakSection(index + 1), 800);
+            }
+        };
+        utterance.onerror = (e) => {
+            console.error('Speech error:', e);
+            setSpeaking(false);
+            if (isPlaying && e.error !== 'canceled') {
+                setTimeout(() => speakSection(index + 1), 800);
+            }
+        };
+
+        synth.speak(utterance);
+    }
+
+    function startPresentation() {
+        if (isPlaying) return;
+        isPlaying = true;
+
+        document.getElementById('btnPlay').disabled = true;
+        document.getElementById('btnStop').disabled = false;
+
+        // Reset cards
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('done', 'active'));
+
+        speakSection(0);
+    }
+
+    function stopPresentation() {
+        isPlaying = false;
+        synth.cancel();
+        setSpeaking(false);
+
+        document.getElementById('btnPlay').disabled = false;
+        document.getElementById('btnStop').disabled = true;
+        document.getElementById('speechBubble').innerHTML = 'Drücken Sie <strong>Play</strong>, um die Erklärung erneut zu starten.';
+    }
+
+    function finishPresentation() {
+        isPlaying = false;
+        setSpeaking(false);
+
+        document.getElementById('btnPlay').disabled = false;
+        document.getElementById('btnStop').disabled = true;
+        document.getElementById('progressFill').style.width = '100%';
+
+        // Mark all as done
+        document.querySelectorAll('.card').forEach(c => {
+            c.classList.remove('active');
+            c.classList.add('done');
+        });
+    }
+
+    // Load voices (some browsers load them async)
+    if (synth.onvoiceschanged !== undefined) {
+        synth.onvoiceschanged = () => getGermanVoice();
+    }
+
+    // Workaround: Chrome stops speech after ~15s. Keep alive with resume.
+    setInterval(() => {
+        if (synth.speaking && !synth.paused) {
+            synth.pause();
+            synth.resume();
+        }
+    }, 10000);
+</script>
+
+</body>
+</html>
